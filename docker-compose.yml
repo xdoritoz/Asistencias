@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15
+    container_name: db_postgres_asistencias
+    restart: always
+    environment:
+      POSTGRES_DB: asistenciasdb
+      POSTGRES_USER: asistenciasuser
+      POSTGRES_PASSWORD: asistenciaspass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  asistencias-app:
+    build: .
+    container_name: app_asistencias
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/asistenciasdb
+      SPRING_DATASOURCE_USERNAME: asistenciasuser
+      SPRING_DATASOURCE_PASSWORD: asistenciaspass
+
+volumes:
+  pgdata:
